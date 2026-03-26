@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Pixie-Net Control</title>
+    <style>
+        body { background: #fff0f3; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+        .box { background: white; padding: 40px; border-radius: 30px; border: 4px solid #ffccd5; width: 320px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        h1 { color: #ff85a2; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ffe4e9; border-radius: 15px; box-sizing: border-box; outline: none; }
+        button { width: 100%; background: #ffb6c1; color: white; border: none; padding: 15px; border-radius: 15px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background: #ff85a2; }
+        #status { margin-top: 15px; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="box" id="login-box">
+    <h1>Login</h1>
+    <input type="text" id="u" placeholder="Логин">
+    <input type="password" id="p" placeholder="Пароль">
+    <button onclick="auth()">ВОЙТИ</button>
+    <p id="status">Введите данные</p>
+</div>
+
+<div class="box" id="admin-box" style="display:none;">
+    <h1>Админка</h1>
+    <p id="welcome"></p>
+    <button onclick="location.reload()" style="background:#ccc;">ВЫЙТИ</button>
+</div>
+
+<script>
+    const api = "https://eo4rau8gkt8py2a.m.pipedream.net";
+
+    async function auth() {
+        const user = document.getElementById('u').value;
+        const pass = document.getElementById('p').value;
+        const st = document.getElementById('status');
+
+        st.innerText = "Подключение...";
+
+        try {
+            const res = await fetch(api, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'login', user: user, pass: pass })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('admin-box').style.display = 'block';
+                document.getElementById('welcome').innerText = "Привет, " + user + "!";
+            } else {
+                st.innerText = "Ошибка: " + data.message;
+            }
+        } catch (e) {
+            st.innerText = "Ошибка сервера. Проверь Pipedream!";
+        }
+    }
+</script>
+</body>
+</html>
