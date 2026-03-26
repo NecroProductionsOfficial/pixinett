@@ -3,52 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixie-Net | Официальный сайт</title>
+    <title>Pixie-Net | Главная</title>
     <style>
+        /* Основные цвета и шрифты */
         :root {
-            --main-pink: #ff85a2;
-            --light-pink: #ffccd5;
-            --bg-color: #fff0f3;
+            --pink: #ff85a2;
+            --soft-pink: #ffccd5;
             --white: #ffffff;
+            --dark: #444;
         }
 
         body {
             margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
-            color: #444;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #fff0f3;
+            color: var(--dark);
             scroll-behavior: smooth;
         }
 
-        /* Навигация */
+        /* Навигационная панель (Шапка) */
         nav {
-            background: var(--white);
-            padding: 15px 50px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 10%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: fixed;
             width: 100%;
             top: 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 15px rgba(255, 133, 162, 0.15);
             z-index: 1000;
             box-sizing: border-box;
         }
 
-        .logo { font-size: 24px; font-weight: bold; color: var(--main-pink); }
+        .logo { font-size: 26px; font-weight: 800; color: var(--pink); letter-spacing: 1px; }
 
         .nav-links button {
-            background: var(--main-pink);
+            background: var(--pink);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 10px 25px;
+            border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
             transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(255, 133, 162, 0.3);
         }
 
-        /* Главный блок (Hero) */
+        .nav-links button:hover { transform: scale(1.05); background: #ff6b8e; }
+
+        /* Главный экран (Hero Section) */
         .hero {
             height: 100vh;
             display: flex;
@@ -56,127 +61,157 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            background: linear-gradient(180deg, #fff0f3 0%, #ffffff 100%);
+            background: radial-gradient(circle, #fff9fa 0%, #fff0f3 100%);
             padding: 0 20px;
         }
 
-        .hero h1 { font-size: 50px; color: var(--main-pink); margin-bottom: 10px; }
-        .hero p { font-size: 20px; max-width: 600px; color: #666; }
-
-        .robot-img {
-            width: 200px;
-            margin-bottom: 20px;
-            animation: float 3s ease-in-out infinite;
+        .robot-container {
+            width: 220px;
+            margin-bottom: 30px;
+            animation: floating 3.5s ease-in-out infinite;
         }
 
-        @keyframes float {
+        @keyframes floating {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-25px); }
         }
 
-        /* Блок информации */
-        .info-section {
-            padding: 80px 20px;
-            max-width: 1000px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-        }
+        .hero h1 { font-size: 56px; color: var(--pink); margin: 10px 0; }
+        .hero p { font-size: 22px; max-width: 700px; color: #777; line-height: 1.6; }
 
-        .info-card {
+        /* Секция с контентом (Блоки) */
+        .content-section {
+            padding: 100px 10%;
             background: white;
-            padding: 30px;
-            border-radius: 20px;
-            border: 2px solid var(--light-pink);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
         }
 
-        /* Модальное окно (Вход/Регистрация) */
+        .card {
+            background: #fff9fa;
+            padding: 40px;
+            border-radius: 25px;
+            border: 2px solid var(--soft-pink);
+            transition: 0.3s;
+        }
+
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(255, 133, 162, 0.1); }
+
+        /* Модальное окно Входа/Регистрации */
         .modal {
             display: none;
             position: fixed;
             z-index: 2000;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 133, 162, 0.4);
+            backdrop-filter: blur(5px);
+            justify-content: center; align-items: center;
         }
 
         .modal-content {
             background: white;
-            padding: 40px;
-            border-radius: 30px;
-            width: 350px;
+            padding: 45px;
+            border-radius: 35px;
+            width: 360px;
             position: relative;
             text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
         }
 
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid var(--bg-color); border-radius: 12px; box-sizing: border-box; }
-        .btn-main { width: 100%; background: var(--main-pink); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .close-btn { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 20px; }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            box-sizing: border-box;
+            outline: none;
+        }
 
-        /* Админка и Юзер панель */
-        #admin-panel, #user-panel { display: none; padding-top: 100px; text-align: center; }
+        input:focus { border-color: var(--pink); }
+
+        .btn-action {
+            width: 100%;
+            background: var(--pink);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+
+        /* Скрытие панелей после входа */
+        #admin-panel, #user-panel { display: none; min-height: 100vh; padding-top: 120px; text-align: center; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">Pixie-Net</div>
+    <div class="logo">PIXIE-NET</div>
     <div class="nav-links">
-        <button onclick="openModal()">Войти / Регистрация</button>
+        <button onclick="openModal()">ЛИЧНЫЙ КАБИНЕТ</button>
     </div>
 </nav>
 
-<div id="main-site">
+<div id="landing-page">
     <section class="hero">
-        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" class="robot-img" alt="Robot">
-        <h1>Добро пожаловать в Pixie-Net</h1>
-        <p>Уникальная платформа для управления твоими проектами. Присоединяйся к нашей сети прямо сейчас!</p>
-        <button class="btn-main" style="width: 200px; margin-top: 20px;" onclick="openModal()">Начать работу</button>
+        <div class="robot-container">
+            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" width="100%" alt="Robot">
+        </div>
+        <h1>Привет от Pixie-Net!</h1>
+        <p>Это твоя новая станция управления. Создавай аккаунты, делись ключами и управляй базой данных в один клик.</p>
+        <button class="btn-action" style="width: 250px;" onclick="openModal()">НАЧАТЬ СЕЙЧАС</button>
     </section>
 
-    <section class="info-section">
-        <div class="info-card">
-            <h3>Безопасность</h3>
-            <p>Ваши данные надежно защищены в облаке MongoDB через зашифрованные шлюзы Pipedream.</p>
+    <section class="content-section">
+        <div class="card">
+            <h2 style="color: var(--pink);">🤖 Умный Бот</h2>
+            <p>Наш виртуальный помощник всегда на связи, чтобы помочь тебе в настройке системы.</p>
         </div>
-        <div class="info-card">
-            <h3>Инвайт-система</h3>
-            <p>Регистрация доступна только избранным. Получите код у администратора сети.</p>
+        <div class="card">
+            <h2 style="color: var(--pink);">🔑 Инвайт-коды</h2>
+            <p>Ты сам решаешь, кто попадет на сайт. Генерируй уникальные ключи для своих друзей.</p>
         </div>
     </section>
 </div>
 
 <div class="modal" id="auth-modal">
     <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">×</span>
-        <h2 id="auth-title">Вход</h2>
-        <input type="text" id="u" placeholder="Логин">
-        <input type="password" id="p" placeholder="Пароль">
-        <div id="reg-fields" style="display:none;">
-            <input type="text" id="inv" placeholder="Инвайт-код">
+        <span style="position:absolute; top:20px; right:25px; cursor:pointer; font-size:24px;" onclick="closeModal()">×</span>
+        <h2 id="modal-title">Вход в систему</h2>
+        
+        <div id="inputs">
+            <input type="text" id="u" placeholder="Твой логин">
+            <input type="password" id="p" placeholder="Твой пароль">
+            <div id="reg-box" style="display:none;">
+                <input type="text" id="inv" placeholder="Введи секретный инвайт-код">
+            </div>
         </div>
-        <button class="btn-main" onclick="handleAuth()" id="auth-btn">ВОЙТИ</button>
-        <p id="toggle-text" style="font-size: 12px; margin-top: 15px; cursor: pointer; color: var(--main-pink);" onclick="toggleAuth()">Нет аккаунта? Регистрация</p>
-        <p id="st" style="font-size: 12px; color: gray;"></p>
+
+        <button class="btn-action" onclick="runAuth()" id="btn-text">ВОЙТИ</button>
+        <p id="toggle-link" style="color: var(--pink); cursor:pointer; font-size:14px; margin-top:20px;" onclick="toggle()">Еще нет аккаунта? Регистрация</p>
+        <p id="st" style="font-size:12px; color: gray; margin-top:10px;"></p>
     </div>
 </div>
 
 <div id="admin-panel" class="hero">
-    <h1>Панель Управления</h1>
-    <p>Привет, <span id="adm-name"></span>! Ты в режиме администратора.</p>
-    <button class="btn-main" style="width: 250px;" onclick="generateInvite()">СОЗДАТЬ ИНВАЙТ</button>
-    <div id="invite-res" style="margin-top: 10px; font-weight: bold; color: var(--main-pink);"></div>
-    <button onclick="location.reload()" style="background: #ccc; border:none; padding:10px; margin-top:20px; border-radius:10px; cursor:pointer;">Выйти</button>
+    <h1 style="font-size: 40px;">👑 Панель Администратора</h1>
+    <p>Добро пожаловать в центр управления, <span id="adm-name" style="color: var(--pink); font-weight: bold;"></span>!</p>
+    <div style="background: white; padding: 30px; border-radius: 25px; border: 2px solid var(--soft-pink); margin-top: 20px;">
+        <button class="btn-action" style="width: 280px; background: #a2d2ff;" onclick="getInvite()">СОЗДАТЬ НОВЫЙ ИНВАЙТ</button>
+        <div id="invite-res" style="margin-top: 20px; font-size: 24px; font-family: monospace; font-weight: bold; color: #4a90e2;"></div>
+    </div>
+    <button onclick="location.reload()" style="background: none; border: none; color: #aaa; text-decoration: underline; cursor: pointer; margin-top: 40px;">Выйти из системы</button>
 </div>
 
 <div id="user-panel" class="hero">
-    <h1>Личный кабинет</h1>
-    <p>Привет, <span id="usr-name"></span>! Рады тебя видеть.</p>
-    <button onclick="location.reload()" class="btn-main" style="width: 150px; background: #ccc;">Выйти</button>
+    <h1>👋 Привет, <span id="usr-name" style="color: var(--pink);"></span>!</h1>
+    <p>Твой аккаунт успешно активирован. Добро пожаловать в сообщество!</p>
+    <button onclick="location.reload()" class="btn-action" style="width: 200px; background: #ccc;">ВЫЙТИ</button>
 </div>
 
 <script>
@@ -186,50 +221,53 @@
     function openModal() { document.getElementById('auth-modal').style.display = 'flex'; }
     function closeModal() { document.getElementById('auth-modal').style.display = 'none'; }
 
-    function toggleAuth() {
+    function toggle() {
         isLogin = !isLogin;
-        document.getElementById('auth-title').innerText = isLogin ? "Вход" : "Регистрация";
-        document.getElementById('auth-btn').innerText = isLogin ? "ВОЙТИ" : "СОЗДАТЬ";
-        document.getElementById('reg-fields').style.display = isLogin ? "none" : "block";
-        document.getElementById('toggle-text').innerText = isLogin ? "Нет аккаунта? Регистрация" : "Уже есть аккаунт? Войти";
+        document.getElementById('modal-title').innerText = isLogin ? "Вход в систему" : "Регистрация";
+        document.getElementById('btn-text').innerText = isLogin ? "ВОЙТИ" : "СОЗДАТЬ АККАУНТ";
+        document.getElementById('reg-box').style.display = isLogin ? "none" : "block";
+        document.getElementById('toggle-link').innerText = isLogin ? "Еще нет аккаунта? Регистрация" : "Уже есть аккаунт? Войти";
     }
 
-    async function handleAuth() {
-        const u = document.getElementById('u').value;
-        const p = document.getElementById('p').value;
-        const inv = document.getElementById('inv').value;
+    async function runAuth() {
+        const user = document.getElementById('u').value;
+        const pass = document.getElementById('p').value;
+        const invite = document.getElementById('inv').value;
         const st = document.getElementById('st');
 
-        st.innerText = "Загрузка...";
+        if(!user || !pass) return alert("Заполни поля!");
+        st.innerText = "Подключение к базе...";
 
         try {
             const res = await fetch(api, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: isLogin ? 'login' : 'register', user: u, pass: p, invite: inv })
+                body: JSON.stringify({ action: isLogin ? 'login' : 'register', user: user, pass: pass, invite: invite })
             });
             const data = await res.json();
 
             if (data.success) {
                 closeModal();
-                document.getElementById('main-site').style.display = 'none';
+                document.getElementById('landing-page').style.display = 'none';
                 if (data.isAdmin) {
                     document.getElementById('admin-panel').style.display = 'flex';
-                    document.getElementById('adm-name').innerText = u;
+                    document.getElementById('adm-name').innerText = user;
                 } else {
                     document.getElementById('user-panel').style.display = 'flex';
-                    document.getElementById('usr-name').innerText = u;
+                    document.getElementById('usr-name').innerText = user;
                 }
             } else {
                 st.innerText = "Ошибка: " + data.message;
             }
-        } catch (e) { st.innerText = "Ошибка связи."; }
+        } catch (e) { st.innerText = "Ошибка сервера."; }
     }
 
-    async function generateInvite() {
+    async function getInvite() {
         const res = await fetch(api, { method: 'POST', body: JSON.stringify({ action: 'generateCode' }) });
         const data = await res.json();
-        if(data.success) document.getElementById('invite-res').innerText = "КОД: " + data.code;
+        if(data.success) {
+            document.getElementById('invite-res').innerText = "КОД: " + data.code;
+        }
     }
 </script>
 
