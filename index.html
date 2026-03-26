@@ -3,362 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixie-Net Aero | Control Panel</title>
+    <title>KnoxStation | Frutiger Aero</title>
     <style>
-        /* ОСНОВНЫЕ ЦВЕТА FRUTIGER AERO */
         :root {
-            --aero-blue: #007bff; /* Основной синий */
-            --light-blue: #a2d9ff; /* Светло-голубой для бликов */
-            --bg-glass: rgba(255, 255, 255, 0.4); /* Прозрачное стекло */
-            --text-dark: #111;
-            --font: 'Segoe UI', Tahoma, sans-serif; /* Шрифт как в Vista/7 */
+            --aero-blue: #007bff;
+            --glass: rgba(255, 255, 255, 0.2);
+            --border-glass: rgba(255, 255, 255, 0.4);
+            --font: 'Segoe UI', Tahoma, sans-serif;
         }
 
         body {
             margin: 0;
             font-family: var(--font);
-            color: var(--text-dark);
-            scroll-behavior: smooth;
-            /* ФОН: Градиент воды + Bubbles (Добавим пузырьки через CSS) */
-            background: linear-gradient(135deg, #a2d9ff 0%, #007bff 100%);
+            background: linear-gradient(135deg, #82caff 0%, #007bff 50%, #004a99 100%);
             background-attachment: fixed;
-            min-height: 100vh;
+            overflow-x: hidden;
+            color: white;
         }
 
-        /* Эффект пузырьков на фоне */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(#fff 1px, transparent 1px);
-            background-size: 50px 50px;
-            opacity: 0.15;
-            z-index: -1;
+        /* Анимированные пузырьки на фоне */
+        .bubbles { position: fixed; width: 100%; height: 100%; z-index: -1; top: 0; }
+        .bubble { position: absolute; background: rgba(255,255,255,0.2); border-radius: 50%; bottom: -100px; animation: rise 10s infinite; }
+        @keyframes rise { 
+            0% { transform: translateY(0) scale(1); opacity: 0; } 
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) scale(1.5); opacity: 0; } 
         }
 
-        /* НАВИГАЦИЯ (ЭФФЕКТ AERO GLASS) */
+        /* ВЕРХНЕЕ СТЕКЛО (Navbar) */
         nav {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px); /* Максимальное размытие */
-            -webkit-backdrop-filter: blur(20px);
-            padding: 10px 10%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 10px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: fixed;
             width: 100%;
             top: 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             z-index: 1000;
             box-sizing: border-box;
         }
 
-        /* ЛОГОТИП С ГЛЯНЦЕМ */
-        .logo { 
-            font-size: 28px; 
-            font-weight: bold; 
-            color: white; 
-            text-transform: uppercase;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            background: linear-gradient(180deg, #fff 0%, #a2d9ff 50%, #fff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        
+        .nav-menu { display: flex; gap: 25px; align-items: center; }
+        .nav-menu a { color: white; text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.3s; opacity: 0.8; }
+        .nav-menu a:hover { opacity: 1; text-shadow: 0 0 10px #fff; }
 
-        /* КНОПКИ ГЛЯНЦЕВЫЕ (ОБЪЕМНЫЕ, С БЛИКАМИ) */
-        button {
-            background: linear-gradient(180deg, #a2d9ff 0%, #007bff 50%, #0056b3 100%);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 12px 25px;
-            border-radius: 20px;
-            cursor: pointer;
+        .auth-btn {
+            background: linear-gradient(180deg, #fff 0%, #a2d9ff 50%, #007bff 100%);
+            color: #004a99;
+            border: 1px solid white;
+            padding: 8px 20px;
+            border-radius: 15px;
             font-weight: bold;
-            font-size: 14px;
-            text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2), inset 0 2px 2px rgba(255,255,255,0.4);
-            transition: 0.3s;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3), inset 0 2px 5px rgba(255,255,255,0.6);
-        }
-
-        button:active { transform: translateY(1px); }
-
-        /* ГЛАВНЫЙ ЭКРАН */
-        .hero {
+        /* ЦЕНТРАЛЬНОЕ ПОЛЕ (ИНФО-БЛОК) */
+        .main-container {
             height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding-top: 60px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border-glass);
+            border-radius: 40px;
+            width: 80%;
+            max-width: 900px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2), inset 0 0 20px rgba(255,255,255,0.1);
             text-align: center;
-            padding: 0 20px;
-        }
-
-        /* ТВОЙ РОБОТ (Летающий, с объемом) */
-        .robot-container {
-            width: 250px;
-            margin-bottom: 40px;
-            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.3)); /* Объёмная тень */
-            animation: floatingAero 4s ease-in-out infinite;
-        }
-
-        @keyframes floatingAero {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
-        }
-
-        .hero h1 { 
-            font-size: 60px; 
-            color: white; 
-            margin: 10px 0;
-            text-shadow: 0 2px 10px rgba(0,123,255,0.5);
-            background: linear-gradient(180deg, #fff 0%, #a2d9ff 50%, #fff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .hero p { 
-            font-size: 24px; 
-            max-width: 700px; 
-            color: rgba(255,255,255,0.9); 
-            line-height: 1.5;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-
-        /* ИНФОРМАЦИОННЫЕ КАРТОЧКИ (СТЕКЛО) */
-        .info-section {
-            padding: 100px 10%;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1), inset 0 0 10px rgba(255,255,255,0.1);
-            transition: 0.4s;
-            color: white;
             position: relative;
             overflow: hidden;
         }
 
-        /* Блик на карточке */
-        .card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        /* Блик на стекле */
+        .glass-panel::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
             pointer-events: none;
         }
 
-        .card:hover { 
-            transform: translateY(-15px) scale(1.02); 
-            border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2), inset 0 0 15px rgba(255,255,255,0.2);
-        }
+        .aero-icon { width: 120px; margin-bottom: 20px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3)); }
 
-        .card h2 { color: #a2d9ff; font-size: 26px; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        h1 { font-size: 42px; background: linear-gradient(180deg, #fff, #a2d9ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0; }
+        p { font-size: 18px; line-height: 1.6; color: rgba(255,255,255,0.9); }
 
-        /* МОДАЛЬНОЕ ОКНО (AERO WINDOW) */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            justify-content: center; align-items: center;
-        }
-
-        .modal-content {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(25px); /* Максимальное размытие стекла */
-            border-radius: 35px;
-            width: 380px;
-            padding: 50px;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 10px rgba(255,255,255,0.1);
-            text-align: center;
-        }
-
-        /* Заголовок окна */
-        .modal-content h2 { 
-            color: white; 
-            text-transform: uppercase; 
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3); 
-            margin-bottom: 30px; 
-            background: linear-gradient(180deg, #fff 0%, #a2d9ff 50%, #fff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* ВВОД ДАННЫХ (СТЕКЛО) */
-        input {
-            width: 100%;
-            padding: 15px;
-            margin: 12px 0;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            box-sizing: border-box;
-            color: white;
-            font-size: 14px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input::placeholder { color: rgba(255,255,255,0.6); }
-
-        input:focus { 
-            border-color: #a2d9ff; 
-            background: rgba(255,255,255,0.1); 
-            box-shadow: 0 0 10px rgba(162,217,255,0.5);
-        }
-
-        /* Панели Админа/Юзера */
-        #admin-panel, #user-panel { display: none; min-height: 100vh; padding-top: 150px; text-align: center; color: white;}
-        #admin-panel p, #user-panel p { color: rgba(255,255,255,0.9); font-size: 20px;}
+        /* МОДАЛЬНОЕ ОКНО */
+        .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal-content { background: rgba(255,255,255,0.2); backdrop-filter: blur(30px); border-radius: 30px; border: 1px solid var(--border-glass); padding: 40px; width: 320px; text-align: center; color: white; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); border-radius: 10px; color: white; outline: none; }
+        
+        /* Стили панелей админа */
+        #admin-panel, #user-panel { display: none; padding-top: 120px; text-align: center; }
     </style>
 </head>
 <body>
 
+<div class="bubbles" id="bubble-container"></div>
+
 <nav>
-    <div class="logo">PIXIE-NET</div>
-    <div class="nav-links">
-        <button onclick="openModal()">ЛИЧНЫЙ КАБИНЕТ</button>
+    <div class="logo">KNOX STATION</div>
+    <div class="nav-menu">
+        <a href="#blog">Блог</a>
+        <a href="#docs">Инструкции</a>
+        <a href="#about">О гаджете</a>
+        <button class="auth-btn" onclick="openModal()">ВХОД / РЕГИСТРАЦИЯ</button>
     </div>
 </nav>
 
-<div id="landing-page">
-    <section class="hero">
-        <div class="robot-container">
-            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" width="100%" alt="Robot">
+<div id="landing">
+    <div class="main-container">
+        <div class="glass-panel">
+            <img src="https://cdn-icons-png.flaticon.com/512/814/814460.png" class="aero-icon" alt="Aero Icon">
+            <h1>Добро пожаловать в будущее</h1>
+            <p>
+                Вы находитесь на главной станции Pixie-Net. <br>
+                Это пространство создано для управления вашим персональным гаджетом и данными. <br>
+                Ознакомьтесь с инструкциями или перейдите в блог, чтобы узнать больше о возможностях системы.
+            </p>
+            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2913/2913501.png" width="50" style="opacity: 0.7;" alt="Fruit1">
+                <img src="https://cdn-icons-png.flaticon.com/512/1048/1048951.png" width="50" style="opacity: 0.7;" alt="Fruit2">
+            </div>
         </div>
-        <h1>ДОБРО ПОЖАЛОВАТЬ!</h1>
-        <p>Ваша персональная станция управления базами данных и инвайт-системой. Свежий взгляд на IT.</p>
-        <button class="btn-hero" style="width: 250px; margin-top: 30px;" onclick="openModal()">ВОЙТИ / РЕГИСТРАЦИЯ</button>
-    </section>
-
-    <section class="info-section">
-        <div class="card">
-            <h2>💎 Умная Сеть</h2>
-            <p>Технология Frutiger Aero в действии: глянцевый интерфейс и бесперебойная работа в облаке.</p>
-        </div>
-        <div class="card">
-            <h2>🌀 Ключи Доступа</h2>
-            <p>Генерируйте уникальные коды для друзей. Ваша база данных — ваши правила.</p>
-        </div>
-    </section>
+    </div>
 </div>
 
 <div class="modal" id="auth-modal">
     <div class="modal-content">
-        <span style="position:absolute; top:20px; right:25px; cursor:pointer; font-size:24px; color:white; font-weight:bold;" onclick="closeModal()">×</span>
-        <h2 id="modal-title">Вход в систему</h2>
-        
-        <div id="inputs">
-            <input type="text" id="u" placeholder="Твой логин">
-            <input type="password" id="p" placeholder="Твой пароль">
-            <div id="reg-box" style="display:none;">
-                <input type="text" id="inv" placeholder="Секретный инвайт-код">
-            </div>
+        <h2 id="m-title">Авторизация</h2>
+        <input type="text" id="u" placeholder="Логин">
+        <input type="password" id="p" placeholder="Пароль">
+        <div id="reg-fields" style="display:none;">
+            <input type="text" id="inv" placeholder="Код инвайта">
         </div>
-
-        <button class="btn-action" onclick="runAuth()" id="btn-text" style="width:100%;">ВОЙТИ</button>
-        <p id="toggle-link" style="color: #a2d9ff; cursor:pointer; font-size:14px; margin-top:20px; text-decoration: underline;" onclick="toggle()">Еще нет аккаунта? Регистрация</p>
-        <p id="st" style="font-size:12px; color: rgba(255,255,255,0.6); margin-top:10px; min-height:1.2em;"></p>
+        <button class="auth-btn" style="width:100%; margin-top:15px;" onclick="runAuth()" id="m-btn">ВОЙТИ</button>
+        <p onclick="toggleM()" style="font-size:12px; cursor:pointer; margin-top:15px; text-decoration:underline;" id="m-toggle">Нет аккаунта? Регистрация</p>
+        <p id="st" style="font-size:11px; margin-top:10px;"></p>
+        <button onclick="closeModal()" style="background:none; border:none; color:white; cursor:pointer; margin-top:10px;">Закрыть</button>
     </div>
 </div>
 
-<div id="admin-panel" class="hero">
-    <h1 style="font-size: 50px;">👑 Админ-центр Aero</h1>
-    <p>Приветствуем, системный администратор, <span id="adm-name" style="color: #a2d9ff; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5);"></span>!</p>
-    
-    <div class="card" style="display:inline-block; max-width: 400px; margin-top: 30px; text-align: center;">
-        <p style="font-size: 16px;">Генерация кодов доступа:</p>
-        <button class="btn-action" style="width: 250px; background: linear-gradient(180deg, #fff 0%, #a2d9ff 50%, #007bff 100%); color: #0056b3;" onclick="getInvite()">СОЗДАТЬ ИНВАЙТ</button>
-        <div id="invite-res" style="margin-top: 20px; font-size: 26px; font-family: monospace; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,123,255,0.7);"></div>
+<div id="admin-panel">
+    <div class="glass-panel" style="margin: 0 auto;">
+        <h1>Админ-панель</h1>
+        <p>Привет, <span id="adm-name"></span>!</p>
+        <button class="auth-btn" onclick="genInv()">СОЗДАТЬ ИНВАЙТ</button>
+        <div id="inv-res" style="margin-top:20px; font-weight:bold; font-size:20px;"></div>
+        <br>
+        <button onclick="location.reload()" class="auth-btn" style="background:gray;">ВЫЙТИ</button>
     </div>
-    
-    <button onclick="location.reload()" style="background: none; border: none; color: #a2d9ff; text-decoration: underline; cursor: pointer; margin-top: 40px;">Выйти из системы</button>
 </div>
 
-<div id="user-panel" class="hero">
-    <h1>👋 С возвращением!</h1>
-    <p>Привет, <span id="usr-name" style="color: #a2d9ff;"></span>! Твой статус: Активный Пользователь.</p>
-    <button onclick="location.reload()" class="btn-action" style="width: 150px; background: linear-gradient(180deg, #ccc 0%, #999 100%);">ВЫЙТИ</button>
+<div id="user-panel">
+    <div class="glass-panel" style="margin: 0 auto;">
+        <h1>Личный кабинет</h1>
+        <p>Добро пожаловать, <span id="usr-name"></span>!</p>
+        <button onclick="location.reload()" class="auth-btn">ВЫЙТИ</button>
+    </div>
 </div>
 
 <script>
     const api = "https://eo4rau8gkt8py2a.m.pipedream.net";
     let isLogin = true;
 
+    // Генерация пузырьков
+    const container = document.getElementById('bubble-container');
+    for (let i = 0; i < 15; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const size = Math.random() * 60 + 20 + 'px';
+        b.style.width = size; b.style.height = size;
+        b.style.left = Math.random() * 100 + '%';
+        b.style.animationDelay = Math.random() * 5 + 's';
+        container.appendChild(b);
+    }
+
     function openModal() { document.getElementById('auth-modal').style.display = 'flex'; }
     function closeModal() { document.getElementById('auth-modal').style.display = 'none'; }
 
-    function toggle() {
+    function toggleM() {
         isLogin = !isLogin;
-        document.getElementById('modal-title').innerText = isLogin ? "Вход в систему" : "Регистрация";
-        document.getElementById('btn-text').innerText = isLogin ? "ВОЙТИ" : "СОЗДАТЬ АККАУНТ";
-        document.getElementById('reg-box').style.display = isLogin ? "none" : "block";
-        document.getElementById('toggle-link').innerText = isLogin ? "Еще нет аккаунта? Регистрация" : "Уже есть аккаунт? Войти";
+        document.getElementById('m-title').innerText = isLogin ? "Авторизация" : "Регистрация";
+        document.getElementById('m-btn').innerText = isLogin ? "ВОЙТИ" : "СОЗДАТЬ";
+        document.getElementById('reg-fields').style.display = isLogin ? "none" : "block";
+        document.getElementById('m-toggle').innerText = isLogin ? "Нет аккаунта? Регистрация" : "Уже есть аккаунт? Войти";
     }
 
     async function runAuth() {
         const user = document.getElementById('u').value;
         const pass = document.getElementById('p').value;
-        const invite = document.getElementById('inv').value;
+        const inv = document.getElementById('inv').value;
         const st = document.getElementById('st');
+        if(!user || !pass) return alert("Заполни данные!");
 
-        if(!user || !pass) return alert("⚠️ Заполни логин и пароль!");
-        st.innerText = "Подключение к Aero Cloud...";
-
+        st.innerText = "Связь со станцией...";
         try {
             const res = await fetch(api, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: isLogin ? 'login' : 'register', user: user, pass: pass, invite: invite })
+                body: JSON.stringify({ action: isLogin ? 'login' : 'register', user, pass, invite: inv })
             });
             const data = await res.json();
-
             if (data.success) {
                 closeModal();
-                document.getElementById('landing-page').style.display = 'none';
+                document.getElementById('landing').style.display = 'none';
                 if (data.isAdmin) {
-                    document.getElementById('admin-panel').style.display = 'flex';
+                    document.getElementById('admin-panel').style.display = 'block';
                     document.getElementById('adm-name').innerText = user;
                 } else {
-                    document.getElementById('user-panel').style.display = 'flex';
+                    document.getElementById('user-panel').style.display = 'block';
                     document.getElementById('usr-name').innerText = user;
                 }
-            } else {
-                st.innerText = "❌ Ошибка: " + data.message;
-            }
-        } catch (e) { st.innerText = "❌ Ошибка сервера."; }
+            } else { st.innerText = "Ошибка: " + data.message; }
+        } catch (e) { st.innerText = "Ошибка сети."; }
     }
 
-    async function getInvite() {
-        const out = document.getElementById('invite-res');
-        out.innerText = "Генерация...";
-        try {
-            const res = await fetch(api, { method: 'POST', body: JSON.stringify({ action: 'generateCode' }) });
-            const data = await res.json();
-            if(data.success) {
-                out.innerText = data.code;
-            }
-        } catch(e) { out.innerText = "Ошибка!"; }
+    async function genInv() {
+        const res = await fetch(api, { method: 'POST', body: JSON.stringify({ action: 'generateCode' }) });
+        const data = await res.json();
+        if(data.success) document.getElementById('inv-res').innerText = "Код: " + data.code;
     }
 </script>
-
 </body>
 </html>
