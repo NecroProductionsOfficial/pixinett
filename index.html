@@ -1,110 +1,209 @@
-<div id="pixie-menu-btn" onclick="togglePixieMenu()">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KnoxStation | Pixie Edition</title>
+    <style>
+        :root {
+            --aero-blue: #007bff;
+            --glass: rgba(255, 255, 255, 0.2);
+            --border-glass: rgba(255, 255, 255, 0.4);
+            --font: 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font);
+            background: linear-gradient(135deg, #82caff 0%, #007bff 50%, #004a99 100%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        /* Анимированные пузырьки */
+        .bubbles { position: fixed; width: 100%; height: 100%; z-index: -1; top: 0; }
+        .bubble { position: absolute; background: rgba(255,255,255,0.2); border-radius: 50%; bottom: -100px; animation: rise 10s infinite; }
+        @keyframes rise { 
+            0% { transform: translateY(0) scale(1); opacity: 0; } 
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) scale(1.5); opacity: 0; } 
+        }
+
+        /* НАВИГАЦИЯ */
+        nav {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .nav-menu { display: flex; gap: 25px; align-items: center; }
+        .nav-menu a { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; opacity: 0.8; }
+        .nav-menu a:hover { opacity: 1; text-shadow: 0 0 10px #fff; }
+
+        .auth-btn {
+            background: linear-gradient(180deg, #fff 0%, #a2d9ff 50%, #007bff 100%);
+            color: #004a99;
+            border: 1px solid white;
+            padding: 8px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* КНОПКА-ЧУДИК (TRIGGER) */
+        #pixie-trigger {
+            position: fixed;
+            top: 80px; /* Ниже навибара */
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            z-index: 1500;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #pixie-trigger:hover { transform: scale(1.1) rotate(5deg); }
+        #pixie-trigger img { 
+            width: 100%; 
+            border-radius: 15px; 
+            border: 2px solid var(--border-glass);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* ВЫЕЗЖАЮЩАЯ ПАНЕЛЬ (SIDEBAR) */
+        #pixie-sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px; /* Спрятано слева */
+            width: 300px;
+            height: 100%;
+            background: rgba(0, 123, 255, 0.25);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-right: 1px solid var(--border-glass);
+            z-index: 2500;
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        #pixie-sidebar.active { left: 0; }
+
+        .sidebar-header {
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar-header img { width: 100px; margin-bottom: 15px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2)); }
+        .sidebar-header h3 { margin: 0; font-size: 22px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+        .sidebar-menu { list-style: none; padding: 20px; margin: 0; }
+        .sidebar-menu li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .sidebar-menu li:hover { background: rgba(255, 255, 255, 0.3); transform: translateX(10px); }
+
+        /* ЗАТЕМНЕНИЕ */
+        #pixie-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 40, 80, 0.4);
+            display: none;
+            z-index: 2400;
+        }
+        #pixie-overlay.active { display: block; }
+
+        /* ЦЕНТРАЛЬНЫЙ КОНТЕНТ */
+        .main-container { height: 100vh; display: flex; justify-content: center; align-items: center; padding-top: 60px; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border-glass);
+            border-radius: 40px;
+            width: 80%; max-width: 800px; padding: 50px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="bubbles" id="bubble-container"></div>
+
+<nav>
+    <div class="logo">KNOX STATION</div>
+    <div class="nav-menu">
+        <a href="#blog">Блог</a>
+        <a href="#docs">Инструкции</a>
+        <button class="auth-btn">ВХОД</button>
+    </div>
+</nav>
+
+<div id="pixie-trigger" onclick="toggleMenu()">
     <img src="Gemini_Generated_Image_ppv98ippv98ippv9.jpg" alt="Pixie">
 </div>
 
+<div id="pixie-overlay" onclick="toggleMenu()"></div>
+
 <div id="pixie-sidebar">
-    <div class="pixie-header">
-        <img src="Gemini_Generated_Image_ppv98ippv98ippv9.jpg" alt="Avatar">
-        <h3>Admin Console</h3>
-        <p>Status: Online</p>
+    <div class="sidebar-header">
+        <img src="Gemini_Generated_Image_ppv98ippv98ippv9.jpg" alt="Logo">
+        <h3>Pixie System</h3>
     </div>
-    <ul class="pixie-nav">
-        <li><a href="#">📊 Статистика сервера</a></li>
-        <li><a href="#">🛠️ Управление гаджетом</a></li>
-        <li><a href="#">💰 Экономика (Robux/Tickets)</a></li>
-        <li><a href="#">📝 Редактор блога</a></li>
+    <ul class="sidebar-menu">
+        <li>Статистика ESP32</li>
+        <li>Управление гаджетом</li>
+        <li>Настройки профиля</li>
+        <li style="color: #ff9999;" onclick="location.reload()">Выйти</li>
     </ul>
 </div>
 
-<div id="pixie-overlay" onclick="togglePixieMenu()"></div>
-
-<style>
-/* 2. Стили под дизайн KNOX STATION */
-#pixie-menu-btn {
-    position: fixed;
-    top: 15px;
-    left: 20px; /* Кнопка слева, как ты и просил */
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-    z-index: 2000;
-    transition: 0.3s;
-}
-
-#pixie-menu-btn img {
-    width: 100%;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 162, 255, 0.5);
-}
-
-#pixie-sidebar {
-    position: fixed;
-    top: 0;
-    left: -300px; /* Спрятано слева */
-    width: 280px;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1); /* Прозрачный эффект стекла */
-    backdrop-filter: blur(15px);
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    z-index: 2001;
-    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    padding: 20px;
-    color: white;
-}
-
-#pixie-sidebar.active {
-    left: 0; /* Выезжает слева направо */
-}
-
-.pixie-header {
-    text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-}
-
-.pixie-header img {
-    width: 80px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
-
-.pixie-nav {
-    list-style: none;
-    padding: 0;
-}
-
-.pixie-nav li a {
-    display: block;
-    padding: 15px;
-    color: white;
-    text-decoration: none;
-    background: rgba(255, 255, 255, 0.05);
-    margin-bottom: 10px;
-    border-radius: 10px;
-    transition: 0.2s;
-}
-
-.pixie-nav li a:hover {
-    background: rgba(0, 162, 255, 0.3);
-    padding-left: 25px;
-}
-
-#pixie-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: none;
-    z-index: 1999;
-}
-
-#pixie-overlay.active { display: block; }
-</style>
+<div id="landing">
+    <div class="main-container">
+        <div class="glass-panel">
+            <h1>Добро пожаловать</h1>
+            <p>Управляйте своим Pixie-гаджетом через центральную станцию Knox.</p>
+        </div>
+    </div>
+</div>
 
 <script>
-// 3. Логика открытия
-function togglePixieMenu() {
-    document.getElementById('pixie-sidebar').classList.toggle('active');
-    document.getElementById('pixie-overlay').classList.toggle('active');
-}
+    // Пузырьки
+    const container = document.getElementById('bubble-container');
+    for (let i = 0; i < 15; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const size = Math.random() * 60 + 20 + 'px';
+        b.style.width = size; b.style.height = size;
+        b.style.left = Math.random() * 100 + '%';
+        b.style.animationDelay = Math.random() * 5 + 's';
+        container.appendChild(b);
+    }
+
+    // Логика меню
+    function toggleMenu() {
+        document.getElementById('pixie-sidebar').classList.toggle('active');
+        document.getElementById('pixie-overlay').classList.toggle('active');
+    }
 </script>
+
+</body>
+</html>
