@@ -21,7 +21,6 @@
             color: white;
         }
 
-        /* Анимированные пузырьки */
         .bubbles { position: fixed; width: 100%; height: 100%; z-index: -1; top: 0; }
         .bubble { position: absolute; background: rgba(255,255,255,0.2); border-radius: 50%; bottom: -100px; animation: rise 10s infinite; }
         @keyframes rise { 
@@ -30,7 +29,6 @@
             100% { transform: translateY(-120vh) scale(1.5); opacity: 0; } 
         }
 
-        /* ВЕРХНЕЕ СТЕКЛО */
         nav {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
@@ -47,9 +45,6 @@
         }
 
         .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; }
-        .nav-menu { display: flex; gap: 25px; align-items: center; }
-        .nav-menu a { color: white; text-decoration: none; font-size: 14px; opacity: 0.8; transition: 0.3s; }
-        .nav-menu a:hover { opacity: 1; text-shadow: 0 0 10px #fff; }
 
         .auth-btn {
             background: linear-gradient(180deg, #fff 0%, #a2d9ff 50%, #007bff 100%);
@@ -62,21 +57,21 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* КНОПКА-ЧУДИК (Скрыта до входа) */
+        /* КНОПКА-ЧУДИК */
         #pixie-trigger {
             position: fixed;
             top: 80px;
             left: 20px;
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             cursor: pointer;
             z-index: 1500;
             display: none;
             transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        #pixie-trigger img { width: 100%; border-radius: 15px; border: 2px solid var(--border-glass); }
+        #pixie-trigger img { width: 100%; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)); }
 
-        /* БОКОВАЯ ПАНЕЛЬ */
+        /* ВЫЕЗЖАЮЩАЯ ПАНЕЛЬ */
         #pixie-sidebar {
             position: fixed;
             top: 0;
@@ -88,31 +83,34 @@
             border-right: 1px solid var(--border-glass);
             z-index: 2500;
             transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
         #pixie-sidebar.active { left: 0; }
 
         .sidebar-header { padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        .sidebar-header img { width: 150px; margin-bottom: 15px; }
+        .sidebar-header img { width: 180px; margin-bottom: 15px; filter: drop-shadow(0 5px 12px rgba(0,0,0,0.2)); }
 
         .sidebar-menu { list-style: none; padding: 20px; margin: 0; }
         .sidebar-menu li {
             padding: 15px; margin-bottom: 10px;
             background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px; cursor: pointer; text-align: center; transition: 0.2s;
         }
-        .sidebar-menu li:hover { background: rgba(255, 255, 255, 0.3); transform: translateX(5px); }
+        .sidebar-menu li:hover { background: rgba(255, 255, 255, 0.3); transform: translateX(10px); }
 
         /* МОДАЛКА */
         .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
         .modal-content { background: rgba(255,255,255,0.2); backdrop-filter: blur(30px); border-radius: 30px; border: 1px solid var(--border-glass); padding: 40px; width: 320px; text-align: center; }
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); border-radius: 10px; color: white; outline: none; box-sizing: border-box; }
 
-        /* ПАНЕЛИ */
         .main-container { height: 100vh; display: flex; justify-content: center; align-items: center; }
         .glass-panel { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px); border: 1px solid var(--border-glass); border-radius: 40px; width: 80%; max-width: 800px; padding: 50px; text-align: center; }
         
         #admin-panel, #user-panel, #pixie-overlay { display: none; }
-        #pixie-overlay.active { display: block; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:2400; }
+        #pixie-overlay.active { display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2400; }
     </style>
 </head>
 <body>
@@ -122,34 +120,28 @@
 <nav>
     <div class="logo">KNOX STATION</div>
     <div class="nav-menu">
-        <a href="#blog">Блог</a>
-        <a href="#docs">Инструкции</a>
         <button class="auth-btn" onclick="openModal()">ВХОД / РЕГИСТРАЦИЯ</button>
     </div>
 </nav>
 
 <div id="pixie-trigger" onclick="toggleMenu()">
-    <img src="w512h5121380984456back-removebg-preview.png" alt="Pixie">
+    <img src="w512h5121380984456back-removebg-preview.png" alt="Pixie Button">
 </div>
 
 <div id="pixie-overlay" onclick="toggleMenu()"></div>
 
 <div id="pixie-sidebar">
     <div class="sidebar-header">
-        <img src="Buble.png" alt="Logo">
-        <h3>Система Pixie</h3>
+        <img src="Buble.png" alt="Pixie Logo">
+        <h3 id="sidebar-title">Система</h3>
     </div>
-    <ul class="sidebar-menu">
-        <li>Статистика ESP32</li>
-        <li>Управление гаджетом</li>
-        <li style="color: #ffbcbc;" onclick="location.reload()">Выйти</li>
-    </ul>
+    <ul class="sidebar-menu" id="dynamic-menu"></ul>
 </div>
 
 <div id="landing" class="main-container">
     <div class="glass-panel">
         <h1>Добро пожаловать</h1>
-        <p>Вы находитесь на главной станции Pixie-Net. <br> Войдите в систему для управления данными.</p>
+        <p>Вы находитесь на главной станции Pixie-Net.</p>
     </div>
 </div>
 
@@ -158,11 +150,9 @@
         <h2 id="m-title">Авторизация</h2>
         <input type="text" id="u" placeholder="Логин">
         <input type="password" id="p" placeholder="Пароль">
-        <div id="reg-fields" style="display:none;">
-            <input type="text" id="inv" placeholder="Код инвайта">
-        </div>
+        <div id="reg-fields" style="display:none;"><input type="text" id="inv" placeholder="Код инвайта"></div>
         <button class="auth-btn" style="width:100%; margin-top:15px;" onclick="runAuth()" id="m-btn">ВОЙТИ</button>
-        <p onclick="toggleM()" style="font-size:12px; cursor:pointer; margin-top:15px; text-decoration:underline;" id="m-toggle">Нет аккаунта? Регистрация</p>
+        <p onclick="toggleM()" style="font-size:12px; cursor:pointer; margin-top:15px; text-decoration:underline;" id="m-toggle">Регистрация</p>
         <p id="st" style="font-size:11px; margin-top:10px;"></p>
         <button onclick="closeModal()" style="background:none; border:none; color:white; cursor:pointer; margin-top:10px;">Закрыть</button>
     </div>
@@ -171,7 +161,7 @@
 <div id="admin-panel" class="main-container">
     <div class="glass-panel">
         <h1>Админ-панель</h1>
-        <p>Привет, <span id="adm-name"></span>! Теперь тебе доступно меню слева.</p>
+        <p>Привет, <span id="adm-name"></span>!</p>
         <button class="auth-btn" onclick="genInv()">СОЗДАТЬ ИНВАЙТ</button>
         <div id="inv-res" style="margin-top:20px; font-weight:bold; font-size:20px;"></div>
         <br>
@@ -214,7 +204,48 @@
         document.getElementById('m-title').innerText = isLogin ? "Авторизация" : "Регистрация";
         document.getElementById('m-btn').innerText = isLogin ? "ВОЙТИ" : "СОЗДАТЬ";
         document.getElementById('reg-fields').style.display = isLogin ? "none" : "block";
-        document.getElementById('m-toggle').innerText = isLogin ? "Нет аккаунта? Регистрация" : "Уже есть аккаунт? Войти";
+    }
+
+    // ГЕНЕРАЦИЯ МЕНЮ В ЗАВИСИМОСТИ ОТ РОЛИ
+    function buildMenu(isAdmin) {
+        const menu = document.getElementById('dynamic-menu');
+        menu.innerHTML = ""; // Очистка
+        
+        const commonItems = [
+            { text: "⚙️ Настройки", action: () => alert("Настройки") },
+            { text: "🔹 Пикси", action: () => alert("Пикси") },
+            { text: "💠 Взрослые Пикси", action: () => alert("Взрослые Пикси") }
+        ];
+
+        const adminItems = [
+            { text: "👥 Люди", action: () => alert("Список людей") },
+            { text: "🦠 Вирусы", action: () => alert("Управление вирусами") }
+        ];
+
+        // Добавляем общие для всех
+        commonItems.forEach(item => {
+            let li = document.createElement('li');
+            li.innerText = item.text;
+            li.onclick = item.action;
+            menu.appendChild(li);
+        });
+
+        // Если админ - добавляем админские
+        if (isAdmin) {
+            adminItems.forEach(item => {
+                let li = document.createElement('li');
+                li.innerText = item.text;
+                li.onclick = item.action;
+                menu.appendChild(li);
+            });
+        }
+
+        // Кнопка выхода в самом низу
+        let logout = document.createElement('li');
+        logout.innerText = "🔒 Выйти";
+        logout.style.color = "#ffbcbc";
+        logout.onclick = () => location.reload();
+        menu.appendChild(logout);
     }
 
     async function runAuth() {
@@ -235,8 +266,9 @@
             if (data.success) {
                 closeModal();
                 document.getElementById('landing').style.display = 'none';
-                // ПОКАЗЫВАЕМ ВКЛАДКУ С ЧУДИКОМ
                 document.getElementById('pixie-trigger').style.display = 'block';
+
+                buildMenu(data.isAdmin); // СТРОИМ МЕНЮ ТУТ
 
                 if (data.isAdmin) {
                     document.getElementById('admin-panel').style.display = 'flex';
