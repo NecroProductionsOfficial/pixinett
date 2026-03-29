@@ -30,11 +30,9 @@
             100% { transform: translateY(-120vh) scale(1.5); opacity: 0; } 
         }
 
-        /* НАВИГАЦИЯ */
         nav {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--border-glass);
             padding: 10px 5%;
             display: flex;
@@ -47,10 +45,7 @@
             box-sizing: border-box;
         }
 
-        .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .nav-menu { display: flex; gap: 25px; align-items: center; }
-        .nav-menu a { color: white; text-decoration: none; font-size: 14px; transition: 0.3s; opacity: 0.8; }
-        .nav-menu a:hover { opacity: 1; text-shadow: 0 0 10px #fff; }
+        .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; }
 
         .auth-btn {
             background: linear-gradient(180deg, #fff 0%, #a2d9ff 50%, #007bff 100%);
@@ -63,85 +58,56 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* КНОПКА-ЧУДИК (TRIGGER) */
+        /* КНОПКА-ЧУДИК (Скрыта по умолчанию) */
         #pixie-trigger {
             position: fixed;
-            top: 80px; /* Ниже навибара */
+            top: 80px;
             left: 20px;
             width: 60px;
             height: 60px;
             cursor: pointer;
             z-index: 1500;
+            display: none; /* СКРЫТО */
             transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        #pixie-trigger:hover { transform: scale(1.1) rotate(5deg); }
-        #pixie-trigger img { 
-            width: 100%; 
-            border-radius: 15px; 
-            border: 2px solid var(--border-glass);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
+        #pixie-trigger img { width: 100%; border-radius: 15px; border: 2px solid var(--border-glass); }
 
-        /* ВЫЕЗЖАЮЩАЯ ПАНЕЛЬ (SIDEBAR) */
+        /* БОКОВАЯ ПАНЕЛЬ */
         #pixie-sidebar {
             position: fixed;
             top: 0;
-            left: -320px; /* Спрятано слева */
+            left: -320px;
             width: 300px;
             height: 100%;
             background: rgba(0, 123, 255, 0.25);
             backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
             border-right: 1px solid var(--border-glass);
             z-index: 2500;
             transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
         }
         #pixie-sidebar.active { left: 0; }
 
-        .sidebar-header {
-            padding: 40px 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .sidebar-header img { width: 100px; margin-bottom: 15px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2)); }
-        .sidebar-header h3 { margin: 0; font-size: 22px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .sidebar-header { padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-header img { width: 100px; margin-bottom: 15px; }
 
         .sidebar-menu { list-style: none; padding: 20px; margin: 0; }
         .sidebar-menu li {
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 15px; margin-bottom: 10px;
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-align: center;
+            border-radius: 15px; cursor: pointer; text-align: center;
         }
-        .sidebar-menu li:hover { background: rgba(255, 255, 255, 0.3); transform: translateX(10px); }
 
-        /* ЗАТЕМНЕНИЕ */
-        #pixie-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 40, 80, 0.4);
-            display: none;
-            z-index: 2400;
-        }
-        #pixie-overlay.active { display: block; }
+        /* МОДАЛКА */
+        .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal-content { background: rgba(255,255,255,0.2); backdrop-filter: blur(30px); border-radius: 30px; padding: 40px; width: 300px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 10px; border: none; box-sizing: border-box; }
 
-        /* ЦЕНТРАЛЬНЫЙ КОНТЕНТ */
-        .main-container { height: 100vh; display: flex; justify-content: center; align-items: center; padding-top: 60px; }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--border-glass);
-            border-radius: 40px;
-            width: 80%; max-width: 800px; padding: 50px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            text-align: center;
-        }
+        /* ПАНЕЛИ */
+        .main-container { height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .glass-panel { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px); border-radius: 40px; padding: 50px; text-align: center; width: 80%; max-width: 600px; }
+        
+        #admin-panel, #user-panel, #pixie-overlay { display: none; }
+        #pixie-overlay.active { display: block; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:2400; }
     </style>
 </head>
 <body>
@@ -151,9 +117,7 @@
 <nav>
     <div class="logo">KNOX STATION</div>
     <div class="nav-menu">
-        <a href="#blog">Блог</a>
-        <a href="#docs">Инструкции</a>
-        <button class="auth-btn">ВХОД</button>
+        <button class="auth-btn" onclick="openModal()">ВХОД / РЕГИСТРАЦИЯ</button>
     </div>
 </nav>
 
@@ -170,18 +134,32 @@
     </div>
     <ul class="sidebar-menu">
         <li>Статистика ESP32</li>
-        <li>Управление гаджетом</li>
-        <li>Настройки профиля</li>
-        <li style="color: #ff9999;" onclick="location.reload()">Выйти</li>
+        <li style="color: #ff9999;" onclick="location.reload()">Выход</li>
     </ul>
 </div>
 
-<div id="landing">
-    <div class="main-container">
-        <div class="glass-panel">
-            <h1>Добро пожаловать</h1>
-            <p>Управляйте своим Pixie-гаджетом через центральную станцию Knox.</p>
-        </div>
+<div id="landing" class="main-container">
+    <div class="glass-panel">
+        <h1>Добро пожаловать</h1>
+        <p>Войдите, чтобы управлять станцией.</p>
+    </div>
+</div>
+
+<div class="modal" id="auth-modal">
+    <div class="modal-content">
+        <h2>Вход</h2>
+        <input type="text" id="u" placeholder="Логин">
+        <input type="password" id="p" placeholder="Пароль">
+        <button class="auth-btn" style="width:100%;" onclick="fakeLogin()">ВОЙТИ</button>
+        <button onclick="closeModal()" style="background:none; border:none; color:white; margin-top:10px; cursor:pointer;">Отмена</button>
+    </div>
+</div>
+
+<div id="admin-panel" class="main-container">
+    <div class="glass-panel">
+        <h1>Админ-панель</h1>
+        <p>Теперь тебе доступна вкладка слева!</p>
+        <button class="auth-btn" onclick="location.reload()">ВЫЙТИ</button>
     </div>
 </div>
 
@@ -189,8 +167,7 @@
     // Пузырьки
     const container = document.getElementById('bubble-container');
     for (let i = 0; i < 15; i++) {
-        const b = document.createElement('div');
-        b.className = 'bubble';
+        const b = document.createElement('div'); b.className = 'bubble';
         const size = Math.random() * 60 + 20 + 'px';
         b.style.width = size; b.style.height = size;
         b.style.left = Math.random() * 100 + '%';
@@ -198,7 +175,24 @@
         container.appendChild(b);
     }
 
-    // Логика меню
+    function openModal() { document.getElementById('auth-modal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('auth-modal').style.display = 'none'; }
+
+    // Функция входа (имитация)
+    function fakeLogin() {
+        const user = document.getElementById('u').value;
+        if(user) {
+            closeModal();
+            document.getElementById('landing').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'flex';
+            
+            // ПОКАЗЫВАЕМ КНОПКУ-ЧУДИКА ТОЛЬКО ТУТ
+            document.getElementById('pixie-trigger').style.display = 'block';
+        } else {
+            alert("Введите логин!");
+        }
+    }
+
     function toggleMenu() {
         document.getElementById('pixie-sidebar').classList.toggle('active');
         document.getElementById('pixie-overlay').classList.toggle('active');
