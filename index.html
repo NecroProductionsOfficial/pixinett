@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KnoxStation | Frutiger Aero</title>
+    <title>KnoxStation | Full Functional</title>
     <style>
         :root {
             --aero-blue: #007bff;
@@ -17,10 +17,11 @@
             font-family: var(--font);
             background: linear-gradient(135deg, #82caff 0%, #007bff 50%, #004a99 100%);
             background-attachment: fixed;
-            overflow-x: hidden;
+            overflow: hidden;
             color: white;
         }
 
+        /* Фон с пузырьками */
         .bubbles { position: fixed; width: 100%; height: 100%; z-index: -1; top: 0; }
         .bubble { position: absolute; background: rgba(255,255,255,0.2); border-radius: 50%; bottom: -100px; animation: rise 10s infinite; }
         @keyframes rise { 
@@ -44,8 +45,6 @@
             box-sizing: border-box;
         }
 
-        .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; }
-
         .auth-btn {
             background: linear-gradient(180deg, #fff 0%, #a2d9ff 50%, #007bff 100%);
             color: #004a99;
@@ -57,7 +56,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* КНОПКА-ЧУДИК */
+        /* Кнопка вызова меню */
         #pixie-trigger {
             position: fixed;
             top: 80px;
@@ -71,46 +70,68 @@
         }
         #pixie-trigger img { width: 100%; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)); }
 
-        /* ВЫЕЗЖАЮЩАЯ ПАНЕЛЬ */
+        /* Боковое меню */
         #pixie-sidebar {
             position: fixed;
             top: 0;
             left: -320px;
             width: 300px;
             height: 100%;
-            background: rgba(0, 123, 255, 0.25);
+            background: rgba(0, 80, 180, 0.3);
             backdrop-filter: blur(25px);
             border-right: 1px solid var(--border-glass);
             z-index: 2500;
             transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
         }
         #pixie-sidebar.active { left: 0; }
 
         .sidebar-header { padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        .sidebar-header img { width: 180px; margin-bottom: 15px; filter: drop-shadow(0 5px 12px rgba(0,0,0,0.2)); }
+        .sidebar-header img { width: 180px; margin-bottom: 15px; }
 
-        .sidebar-menu { list-style: none; padding: 20px; margin: 0; }
+        .sidebar-menu { list-style: none; padding: 20px; margin: 0; overflow-y: auto; }
         .sidebar-menu li {
             padding: 15px; margin-bottom: 10px;
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 15px; cursor: pointer; text-align: center; transition: 0.2s;
         }
-        .sidebar-menu li:hover { background: rgba(255, 255, 255, 0.3); transform: translateX(10px); }
+        .sidebar-menu li:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
 
-        /* МОДАЛКА */
-        .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
-        .modal-content { background: rgba(255,255,255,0.2); backdrop-filter: blur(30px); border-radius: 30px; border: 1px solid var(--border-glass); padding: 40px; width: 320px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); border-radius: 10px; color: white; outline: none; box-sizing: border-box; }
+        /* Контентные зоны */
+        .main-container { height: 100vh; display: flex; justify-content: center; align-items: center; padding-top: 60px; box-sizing: border-box; }
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(25px); 
+            border: 1px solid var(--border-glass); 
+            border-radius: 40px; 
+            width: 85%; max-width: 900px; height: 70vh;
+            padding: 40px; text-align: center; 
+            overflow-y: auto;
+            display: none; /* Скрыты по умолчанию */
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .main-container { height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .glass-panel { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px); border: 1px solid var(--border-glass); border-radius: 40px; width: 80%; max-width: 800px; padding: 50px; text-align: center; }
-        
-        #admin-panel, #user-panel, #pixie-overlay { display: none; }
-        #pixie-overlay.active { display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2400; }
+        .content-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Модалка */
+        .modal { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+        .modal-content { background: rgba(255,255,255,0.2); backdrop-filter: blur(30px); border-radius: 30px; padding: 40px; width: 320px; text-align: center; border: 1px solid white; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; background: rgba(255,255,255,0.2); color: white; box-sizing: border-box; }
+
+        #pixie-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2400; }
+        #pixie-overlay.active { display: block; }
     </style>
 </head>
 <body>
@@ -119,77 +140,89 @@
 
 <nav>
     <div class="logo">KNOX STATION</div>
-    <div class="nav-menu">
-        <button class="auth-btn" onclick="openModal()">ВХОД / РЕГИСТРАЦИЯ</button>
-    </div>
+    <div id="nav-info" style="font-size: 12px; opacity: 0.7;">System Idle</div>
+    <button class="auth-btn" id="main-auth-btn" onclick="openModal()">ВХОД</button>
 </nav>
 
 <div id="pixie-trigger" onclick="toggleMenu()">
-    <img src="w512h5121380984456back-removebg-preview.png" alt="Pixie Button">
+    <img src="w512h5121380984456back-removebg-preview.png" alt="Menu">
 </div>
 
 <div id="pixie-overlay" onclick="toggleMenu()"></div>
 
 <div id="pixie-sidebar">
     <div class="sidebar-header">
-        <img src="Buble.png" alt="Pixie Logo">
-        <h3 id="sidebar-title">Система</h3>
+        <img src="Buble.png" alt="Logo">
+        <h3 id="role-tag">Загрузка...</h3>
     </div>
     <ul class="sidebar-menu" id="dynamic-menu"></ul>
 </div>
 
-<div id="landing" class="main-container">
-    <div class="glass-panel">
-        <h1>Добро пожаловать</h1>
-        <p>Вы находитесь на главной станции Pixie-Net.</p>
+<div class="main-container">
+    <div id="section-home" class="glass-panel" style="display: block;">
+        <h1>Knox Station</h1>
+        <p>Добро пожаловать в систему управления Pixie. Пожалуйста, авторизуйтесь.</p>
+    </div>
+
+    <div id="section-settings" class="glass-panel">
+        <h2>⚙️ Настройки</h2>
+        <div class="content-card"><span>Язык системы</span><button class="auth-btn">RU</button></div>
+        <div class="content-card"><span>Прозрачность интерфейса</span><button class="auth-btn">80%</button></div>
+        <div class="content-card"><span>Звуковые уведомления</span><button class="auth-btn">ВКЛ</button></div>
+    </div>
+
+    <div id="section-pixie" class="glass-panel">
+        <h2>🔹 Мои Пикси</h2>
+        <div class="content-card"><span>Pixie_v3.1 (Online)</span><button class="auth-btn">УПРАВЛЯТЬ</button></div>
+        <div class="content-card"><span>Pixie_Mini (Offline)</span><button class="auth-btn" style="background: gray;">ПОДКЛЮЧИТЬ</button></div>
+    </div>
+
+    <div id="section-adult" class="glass-panel">
+        <h2>💠 Взрослые Пикси</h2>
+        <p>Доступ к расширенным конфигурациям ядра.</p>
+        <div class="content-card"><span>Ядро системы</span><button class="auth-btn">ПЕРЕЗАГРУЗИТЬ</button></div>
+    </div>
+
+    <div id="section-people" class="glass-panel">
+        <h2>👥 Управление пользователями</h2>
+        <div class="content-card"><span>User_01</span><button class="auth-btn" style="background: red;">БАН</button></div>
+        <button class="auth-btn" onclick="genInv()">+ СОЗДАТЬ ИНВАЙТ</button>
+        <div id="inv-res" style="margin-top: 15px; font-weight: bold;"></div>
+    </div>
+
+    <div id="section-viruses" class="glass-panel">
+        <h2>🦠 Анализатор угроз</h2>
+        <div class="content-card"><span>Trojan.Win32 (Удалено)</span><span style="color: #00ff00;">Безопасно</span></div>
+        <div class="content-card"><span>Exploit.ESP32</span><button class="auth-btn">ОТЧЕТ</button></div>
     </div>
 </div>
 
 <div class="modal" id="auth-modal">
     <div class="modal-content">
-        <h2 id="m-title">Авторизация</h2>
+        <h2 id="m-title">Вход</h2>
         <input type="text" id="u" placeholder="Логин">
         <input type="password" id="p" placeholder="Пароль">
-        <div id="reg-fields" style="display:none;"><input type="text" id="inv" placeholder="Код инвайта"></div>
-        <button class="auth-btn" style="width:100%; margin-top:15px;" onclick="runAuth()" id="m-btn">ВОЙТИ</button>
-        <p onclick="toggleM()" style="font-size:12px; cursor:pointer; margin-top:15px; text-decoration:underline;" id="m-toggle">Регистрация</p>
-        <p id="st" style="font-size:11px; margin-top:10px;"></p>
-        <button onclick="closeModal()" style="background:none; border:none; color:white; cursor:pointer; margin-top:10px;">Закрыть</button>
-    </div>
-</div>
-
-<div id="admin-panel" class="main-container">
-    <div class="glass-panel">
-        <h1>Админ-панель</h1>
-        <p>Привет, <span id="adm-name"></span>!</p>
-        <button class="auth-btn" onclick="genInv()">СОЗДАТЬ ИНВАЙТ</button>
-        <div id="inv-res" style="margin-top:20px; font-weight:bold; font-size:20px;"></div>
-        <br>
-        <button onclick="location.reload()" class="auth-btn" style="background:gray;">ВЫЙТИ</button>
-    </div>
-</div>
-
-<div id="user-panel" class="main-container">
-    <div class="glass-panel">
-        <h1>Личный кабинет</h1>
-        <p>Добро пожаловать, <span id="usr-name"></span>!</p>
-        <button onclick="location.reload()" class="auth-btn">ВЫЙТИ</button>
+        <div id="reg-fields" style="display:none;"><input type="text" id="inv" placeholder="Инвайт"></div>
+        <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="runAuth()">ПОДТВЕРДИТЬ</button>
+        <p id="m-toggle" onclick="toggleM()" style="font-size: 12px; cursor: pointer; text-decoration: underline; margin-top: 10px;">Регистрация</p>
+        <p id="st" style="font-size: 10px;"></p>
+        <button onclick="closeModal()" style="background: none; border: none; color: white; cursor: pointer;">Отмена</button>
     </div>
 </div>
 
 <script>
     const api = "https://eo4rau8gkt8py2a.m.pipedream.net";
     let isLogin = true;
+    let currentUser = null;
 
     // Пузырьки
-    const container = document.getElementById('bubble-container');
-    for (let i = 0; i < 15; i++) {
+    const bubbleBox = document.getElementById('bubble-container');
+    for(let i=0; i<15; i++) {
         const b = document.createElement('div'); b.className = 'bubble';
-        const size = Math.random() * 60 + 20 + 'px';
-        b.style.width = size; b.style.height = size;
-        b.style.left = Math.random() * 100 + '%';
-        b.style.animationDelay = Math.random() * 5 + 's';
-        container.appendChild(b);
+        b.style.width = b.style.height = Math.random()*50+20+'px';
+        b.style.left = Math.random()*100+'%';
+        b.style.animationDelay = Math.random()*5+'s';
+        bubbleBox.appendChild(b);
     }
 
     function openModal() { document.getElementById('auth-modal').style.display = 'flex'; }
@@ -201,91 +234,84 @@
 
     function toggleM() {
         isLogin = !isLogin;
-        document.getElementById('m-title').innerText = isLogin ? "Авторизация" : "Регистрация";
-        document.getElementById('m-btn').innerText = isLogin ? "ВОЙТИ" : "СОЗДАТЬ";
+        document.getElementById('m-title').innerText = isLogin ? "Вход" : "Регистрация";
         document.getElementById('reg-fields').style.display = isLogin ? "none" : "block";
     }
 
-    // ГЕНЕРАЦИЯ МЕНЮ В ЗАВИСИМОСТИ ОТ РОЛИ
+    // Переключение вкладок
+    function showSection(id) {
+        document.querySelectorAll('.glass-panel').forEach(p => p.style.display = 'none');
+        document.getElementById('section-' + id).style.display = 'block';
+        if(window.innerWidth < 1000) toggleMenu(); // Закрыть меню на мобилках
+    }
+
+    // Сборка меню
     function buildMenu(isAdmin) {
         const menu = document.getElementById('dynamic-menu');
-        menu.innerHTML = ""; // Очистка
+        menu.innerHTML = "";
         
-        const commonItems = [
-            { text: "⚙️ Настройки", action: () => alert("Настройки") },
-            { text: "🔹 Пикси", action: () => alert("Пикси") },
-            { text: "💠 Взрослые Пикси", action: () => alert("Взрослые Пикси") }
+        const items = [
+            { id: "settings", text: "⚙️ Настройки" },
+            { id: "pixie", text: "🔹 Пикси" },
+            { id: "adult", text: "💠 Взрослые Пикси" }
         ];
 
-        const adminItems = [
-            { text: "👥 Люди", action: () => alert("Список людей") },
-            { text: "🦠 Вирусы", action: () => alert("Управление вирусами") }
-        ];
+        if(isAdmin) {
+            items.push({ id: "people", text: "👥 Люди" });
+            items.push({ id: "viruses", text: "🦠 Вирусы" });
+        }
 
-        // Добавляем общие для всех
-        commonItems.forEach(item => {
+        items.forEach(item => {
             let li = document.createElement('li');
             li.innerText = item.text;
-            li.onclick = item.action;
+            li.onclick = () => showSection(item.id);
             menu.appendChild(li);
         });
 
-        // Если админ - добавляем админские
-        if (isAdmin) {
-            adminItems.forEach(item => {
-                let li = document.createElement('li');
-                li.innerText = item.text;
-                li.onclick = item.action;
-                menu.appendChild(li);
-            });
-        }
-
-        // Кнопка выхода в самом низу
-        let logout = document.createElement('li');
-        logout.innerText = "🔒 Выйти";
-        logout.style.color = "#ffbcbc";
-        logout.onclick = () => location.reload();
-        menu.appendChild(logout);
+        let out = document.createElement('li');
+        out.innerText = "🔒 Выход";
+        out.style.marginTop = "20px";
+        out.onclick = () => location.reload();
+        menu.appendChild(out);
     }
 
     async function runAuth() {
         const user = document.getElementById('u').value;
         const pass = document.getElementById('p').value;
-        const inv = document.getElementById('inv').value;
+        const invite = document.getElementById('inv').value;
         const st = document.getElementById('st');
-        if(!user || !pass) return alert("Заполни данные!");
 
-        st.innerText = "Связь со станцией...";
+        st.innerText = "Авторизация...";
         try {
             const res = await fetch(api, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: isLogin ? 'login' : 'register', user, pass, invite: inv })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action: isLogin?'login':'register', user, pass, invite })
             });
             const data = await res.json();
-            if (data.success) {
+            
+            if(data.success) {
+                currentUser = user;
                 closeModal();
-                document.getElementById('landing').style.display = 'none';
+                document.getElementById('section-home').innerHTML = `<h1>Привет, ${user}!</h1><p>Система готова к работе. Используй меню слева.</p>`;
                 document.getElementById('pixie-trigger').style.display = 'block';
-
-                buildMenu(data.isAdmin); // СТРОИМ МЕНЮ ТУТ
-
-                if (data.isAdmin) {
-                    document.getElementById('admin-panel').style.display = 'flex';
-                    document.getElementById('adm-name').innerText = user;
-                } else {
-                    document.getElementById('user-panel').style.display = 'flex';
-                    document.getElementById('usr-name').innerText = user;
-                }
-            } else { st.innerText = "Ошибка: " + data.message; }
-        } catch (e) { st.innerText = "Ошибка сети."; }
+                document.getElementById('main-auth-btn').style.display = 'none';
+                document.getElementById('nav-info').innerText = `Active User: ${user}`;
+                document.getElementById('role-tag').innerText = data.isAdmin ? "Administrator" : "User";
+                
+                buildMenu(data.isAdmin);
+            } else {
+                st.innerText = "Ошибка: " + data.message;
+            }
+        } catch(e) { st.innerText = "Сервер не отвечает."; }
     }
 
     async function genInv() {
         const res = await fetch(api, { method: 'POST', body: JSON.stringify({ action: 'generateCode' }) });
         const data = await res.json();
-        if(data.success) document.getElementById('inv-res').innerText = "Код: " + data.code;
+        if(data.success) document.getElementById('inv-res').innerText = "НОВЫЙ КОД: " + data.code;
     }
 </script>
+
 </body>
 </html>
