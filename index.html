@@ -2,165 +2,116 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Knox OS | 200 Units Database</title>
+    <title>Knox Station | Lab & Database</title>
     <style>
-        /* Стиль Frutiger Aero (Глянец и Стекло) */
-        body {
-            margin: 0; font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #007bff, #00c6ff);
-            color: white; overflow-x: hidden;
-        }
-        .container { padding: 80px 20px; display: flex; flex-direction: column; align-items: center; }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 25px; padding: 20px; width: 90%; max-width: 800px;
-            margin-bottom: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-        .scroll-box {
-            height: 300px; overflow-y: auto; background: rgba(0,0,0,0.1);
-            border-radius: 15px; padding: 10px; margin-top: 10px;
-        }
-        .card {
-            background: rgba(255, 255, 255, 0.1); border-radius: 10px;
-            padding: 10px; margin: 5px 0; display: flex; align-items: center;
-            justify-content: space-between; border: 1px solid rgba(255,255,255,0.1);
-        }
-        .card img { width: 40px; height: 40px; }
-        button {
-            background: white; color: #007bff; border: none; padding: 10px 20px;
-            border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        button:hover { background: #e0f2ff; transform: scale(1.05); }
+        :root { --aero: #007bff; --glass: rgba(255, 255, 255, 0.2); }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #007bff, #00c6ff); color: white; min-height: 100vh; }
         
-        /* Эмулятор OLED */
-        #oled-preview {
-            background: #000; width: 128px; height: 64px; border: 3px solid #555;
-            margin: 10px auto; position: relative; border-radius: 5px;
+        /* Верхняя панель с кнопкой Входа */
+        nav {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+            padding: 15px 5%; display: flex; justify-content: space-between; align-items: center;
+            position: fixed; width: 100%; top: 0; z-index: 1000; box-sizing: border-box;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
         }
+
+        .container { padding: 100px 20px 40px; display: flex; flex-direction: column; align-items: center; }
+        
+        .glass-panel {
+            background: var(--glass); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 25px;
+            padding: 20px; width: 90%; max-width: 800px; margin-bottom: 20px;
+        }
+
+        .scroll-box { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.1); border-radius: 15px; padding: 10px; }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 10px;
+            margin: 5px 0; display: flex; align-items: center; justify-content: space-between;
+        }
+        
+        .card img { width: 45px; height: 45px; border-radius: 5px; }
+
+        .btn { background: white; color: #007bff; border: none; padding: 8px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .btn-login { background: #adff2f; color: #000; padding: 10px 25px; font-size: 16px; }
+
+        #oled-preview { background: #000; width: 128px; height: 64px; border: 2px solid #555; margin: 10px auto; position: relative; }
     </style>
 </head>
 <body>
 
+<nav>
+    <div style="font-size: 20px; font-weight: bold;">KNOX STATION</div>
+    <button class="btn btn-login" onclick="alert('Вход в систему...')">ВХОД</button>
+</nav>
+
 <div class="container">
     <div class="glass-panel" style="text-align: center;">
-        <h2>📺 Монитор Трансляции (KNOX-100)</h2>
-        <div id="oled-preview"></div>
-        <p id="status-text" style="font-size: 12px;">Статус: Синхронизация...</p>
+        <h3>📺 ТРАНСЛЯЦИЯ НА ГАДЖЕТ</h3>
+        <div id="oled-preview">
+            <p style="color: #333; font-size: 8px; margin-top: 25px;">OLED OFF</p>
+        </div>
+        <div id="active-info" style="font-size: 12px; color: #adff2f;">Пара не выбрана</div>
     </div>
 
     <div class="glass-panel">
-        <h2>🔹 Детский Сад (1-100 Пикси)</h2>
+        <h4>🔹 ДЕТСКИЙ САД (100 UNIT)</h4>
         <div id="pixie-list" class="scroll-box"></div>
     </div>
 
     <div class="glass-panel">
-        <h2>💠 Штаб Воспитателей (1-100 Взрослых)</h2>
+        <h4>💠 ВОСПИТАТЕЛИ (100 UNIT)</h4>
         <div id="adult-list" class="scroll-box"></div>
     </div>
-    
-    <button onclick="generateFullLegacy()">♻️ ПЕРЕГЕНЕРИРОВАТЬ ВСЮ БАЗУ (200 UNIT)</button>
 </div>
 
 <script>
-    // Тот самый скрипт, который ты просил посадить в сайт:
-    
-    let knoxDatabase = {
-        children: [], 
-        adults: [],   
-        activePair: { child: null, adult: null }
-    };
+    let db = { children: [], adults: [], active: { c: null, a: null } };
 
-    function generateFullLegacy() {
-        knoxDatabase.children = [];
-        knoxDatabase.adults = [];
-
-        for (let i = 1; i <= 100; i++) {
-            // Создаем 100 детей
-            knoxDatabase.children.push({
-                id: i,
-                name: "Пикси #" + i,
-                art: "w512h5121380984456back-removebg-preview.png",
-                power: Math.floor(Math.random() * 100)
-            });
-
-            // Создаем 100 взрослых
-            knoxDatabase.adults.push({
-                id: i,
-                name: "Воспитатель #" + i,
-                art: "Buble.png",
-                iq: 150 + i
-            });
+    // Генерируем базу
+    function init() {
+        for(let i=1; i<=100; i++) {
+            db.children.push({ id: i, name: "Пикси #"+i, art: "w512h5121380984456back-removebg-preview.png" });
+            db.adults.push({ id: i, name: "Куратор #"+i, art: "Buble.png" });
         }
-
-        // Назначаем первую пару активной для ESP32
-        knoxDatabase.activePair.child = knoxDatabase.children[0];
-        knoxDatabase.activePair.adult = knoxDatabase.adults[0];
-
-        saveToStorage();
-        renderAll();
+        render();
     }
 
-    function renderAll() {
+    function render() {
         // Отрисовка списка детей
-        document.getElementById('pixie-list').innerHTML = knoxDatabase.children.map(p => `
+        document.getElementById('pixie-list').innerHTML = db.children.map(p => `
             <div class="card">
-                <img src="${p.art}" style="filter: hue-rotate(${p.id * 10}deg)">
-                <span>${p.name} (Сила: ${p.power})</span>
-                <button onclick="setActive(${p.id}, 'child')">В ГАДЖЕТ</button>
+                <img src="${p.art}" onerror="this.src='https://via.placeholder.com/45?text=P'">
+                <span>${p.name}</span>
+                <button class="btn" onclick="sendToOled(${p.id}, 'c')">В ГАДЖЕТ</button>
             </div>
         `).join('');
 
         // Отрисовка списка взрослых
-        document.getElementById('adult-list').innerHTML = knoxDatabase.adults.map(a => `
+        document.getElementById('adult-list').innerHTML = db.adults.map(a => `
             <div class="card">
-                <img src="${a.art}" style="opacity: 0.8">
-                <span>${a.name} (IQ: ${a.iq})</span>
-                <button onclick="setActive(${a.id}, 'adult')">В ГАДЖЕТ</button>
+                <img src="${a.art}" onerror="this.src='https://via.placeholder.com/45?text=A'">
+                <span>${a.name}</span>
+                <button class="btn" onclick="sendToOled(${a.id}, 'a')">В ГАДЖЕТ</button>
             </div>
         `).join('');
-
-        updateOLED();
     }
 
-    function setActive(id, type) {
-        if(type === 'child') knoxDatabase.activePair.child = knoxDatabase.children[id-1];
-        else knoxDatabase.activePair.adult = knoxDatabase.adults[id-1];
+    function sendToOled(id, type) {
+        if(type === 'c') db.active.c = db.children[id-1];
+        else db.active.a = db.adults[id-1];
         
-        saveToStorage();
-        updateOLED();
-        alert("Пара обновлена! ESP32 получит данные при включении.");
-    }
-
-    function updateOLED() {
         const oled = document.getElementById('oled-preview');
-        const child = knoxDatabase.activePair.child;
-        const adult = knoxDatabase.activePair.adult;
-
-        oled.innerHTML = `
-            <img src="${child.art}" style="width:25px; position:absolute; left:10px; top:20px; filter:invert(1);">
-            <img src="${adult.art}" style="width:20px; position:absolute; right:10px; top:5px; filter:invert(1);">
-            <div style="color:white; font-size:7px; position:absolute; bottom:5px; width:100%; text-align:center;">
-                KNOX-100: ${child.name} & ${adult.name}
-            </div>
-        `;
+        const info = document.getElementById('active-info');
+        
+        let cArt = db.active.c ? `<img src="${db.active.c.art}" style="width:25px; position:absolute; left:10px; top:20px; filter:invert(1);">` : "";
+        let aArt = db.active.a ? `<img src="${db.active.a.art}" style="width:20px; position:absolute; right:10px; top:5px; filter:invert(1);">` : "";
+        
+        oled.innerHTML = cArt + aArt;
+        info.innerText = `Активны: ${db.active.c?.name || '...'} + ${db.active.a?.name || '...'}`;
     }
 
-    function saveToStorage() {
-        localStorage.setItem('knox_full_db', JSON.stringify(knoxDatabase));
-    }
-
-    // Загрузка
-    window.onload = () => {
-        const saved = localStorage.getItem('knox_full_db');
-        if(saved) {
-            knoxDatabase = JSON.parse(saved);
-            renderAll();
-        } else {
-            generateFullLegacy();
-        }
-    };
+    init();
 </script>
 
 </body>
