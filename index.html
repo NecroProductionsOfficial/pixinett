@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KnoxStation | Virus Builder</title>
+    <title>KnoxStation | Labs & Security</title>
     <style>
         :root {
             --aero-blue: #007bff;
@@ -22,7 +22,7 @@
         }
 
         .bubbles { position: fixed; width: 100%; height: 100%; z-index: -1; top: 0; }
-        .bubble { position: absolute; background: rgba(255,255,255,0.2); border-radius: 50%; bottom: -100px; animation: rise 10s infinite; }
+        .bubble { position: absolute; background: rgba(255,255,255,0.15); border-radius: 50%; bottom: -100px; animation: rise 10s infinite; }
         @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0; } 50% { opacity: 0.5; } 100% { transform: translateY(-120vh) scale(1.5); opacity: 0; } }
 
         nav {
@@ -68,7 +68,7 @@
         .glass-panel { 
             background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(var(--panel-blur));
             border: 1px solid var(--border-glass); border-radius: 40px;
-            width: 85%; max-width: 800px; height: 70vh; padding: 40px;
+            width: 85%; max-width: 800px; height: 75vh; padding: 40px;
             display: none; animation: slideUp 0.4s ease; overflow-y: auto; text-align: center;
         }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -79,12 +79,13 @@
             display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* Редактор кода */
         #code-editor {
-            width: 100%; height: 200px; background: #1e1e1e; color: #d4d4d4;
-            font-family: 'Consolas', monospace; padding: 10px; border-radius: 10px;
-            border: 1px solid #007bff; margin-top: 10px; resize: none; outline: none;
+            width: 100%; height: 150px; background: #1e1e1e; color: #d4d4d4;
+            font-family: monospace; padding: 10px; border-radius: 10px; border: 1px solid #007bff;
         }
+
+        /* Индикатор Пикси */
+        .pixie-status-orb { width: 15px; height: 15px; border-radius: 50%; background: #00ff00; box-shadow: 0 0 10px #00ff00; }
 
         .modal { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
         .modal-content { background: rgba(255,255,255,0.2); backdrop-filter: blur(30px); border-radius: 30px; padding: 40px; width: 320px; text-align: center; border: 1px solid white; }
@@ -100,12 +101,12 @@
 
 <nav>
     <div class="logo">KNOX STATION</div>
-    <div id="status-bar" style="font-size: 12px; color: #adff2f;">● System Idle</div>
+    <div id="status-bar" style="font-size: 12px; color: #adff2f;">● System Standby</div>
     <button class="auth-btn" id="login-nav-btn" onclick="openModal()">ВХОД</button>
 </nav>
 
 <div id="pixie-trigger" onclick="toggleMenu()">
-    <img src="w512h5121380984456back-removebg-preview.png" alt="Pixie">
+    <img src="w512h5121380984456back-removebg-preview.png" alt="Menu">
 </div>
 
 <div id="pixie-overlay" onclick="toggleMenu()"></div>
@@ -113,56 +114,67 @@
 <div id="pixie-sidebar">
     <div class="sidebar-header">
         <img src="Buble.png" alt="Logo">
-        <h3 id="role-text">Меню станции</h3>
+        <h3 id="role-text">Доступ ограничен</h3>
     </div>
     <ul class="sidebar-menu" id="side-menu"></ul>
 </div>
 
 <div class="main-container">
     <div id="view-home" class="glass-panel" style="display: block;">
-        <h1>Добро пожаловать</h1>
-        <p>Авторизуйтесь для доступа к управлению вирусами и мониторингу.</p>
+        <h1>Knox Station</h1>
+        <p>Добро пожаловать в Дом. Авторизуйтесь для входа.</p>
+    </div>
+
+    <div id="view-pixie" class="glass-panel">
+        <h2>🔹 Ваши Пикси</h2>
+        <div class="card">
+            <span>Pixie_Unit_01</span>
+            <div class="pixie-status-orb"></div>
+        </div>
+        <button class="auth-btn">ПИНГОВАТЬ</button>
+    </div>
+
+    <div id="view-adult" class="glass-panel">
+        <h2>💠 Взрослые Пикси</h2>
+        <p>Настройки расширенного интеллекта Пикси.</p>
+        <div class="card"><span>Протокол защиты</span><b>ВКЛ</b></div>
     </div>
 
     <div id="view-settings" class="glass-panel">
         <h2>⚙️ Настройки</h2>
-        <div class="card"><span>Ночной режим</span><button class="auth-btn">ВКЛ</button></div>
+        <div class="card"><span>Уведомления</span><button class="auth-btn">ВКЛ</button></div>
     </div>
 
     <div id="view-people" class="glass-panel">
-        <h2>👥 Мониторинг Пользователей</h2>
-        <div id="user-list-container">
-            <div class="card"><span id="active-user-display">Ожидание авторизации...</span><b style="color:#00ff00">ONLINE</b></div>
-        </div>
-        <hr style="opacity:0.2">
-        <button class="auth-btn" style="width:100%" onclick="genInv()">СОЗДАТЬ ИНВАЙТ</button>
-        <div id="inv-output" style="margin-top:15px; font-weight:bold;"></div>
+        <h2>👥 Список Людей в Доме</h2>
+        <div id="user-list">
+            <div class="card"><span>Администратор</span><b style="color:#adff2f">В СЕТИ</b></div>
+            </div>
+        <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="genInv()">+ СОЗДАТЬ ИНВАЙТ</button>
+        <div id="inv-output" style="margin-top:10px;"></div>
     </div>
 
     <div id="view-viruses" class="glass-panel">
-        <h2>🦠 Центр Разработки Вирусов</h2>
-        <div class="card">
-            <span>Создано вирусов:</span>
-            <b id="virus-count" style="font-size: 24px; color: #ff4444;">0</b>
-        </div>
+        <h2>🦠 Лаборатория Вирусов</h2>
         
-        <div id="virus-builder" style="display:none; text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 20px;">
-            <label>Название проекта:</label>
-            <input type="text" id="v-name" placeholder="Virus.exe" style="margin-bottom: 10px;">
-            <label>Исходный код (C#):</label>
-            <textarea id="code-editor">using System;
+        <div class="card" style="background: rgba(255,0,0,0.1);">
+            <div style="text-align: left;">
+                <b>Подопытный Пикси</b><br>
+                <small id="test-pixie-status">Состояние: Нормальное</small>
+            </div>
+            <div id="test-pixie-orb" class="pixie-status-orb" style="background: #00ff00;"></div>
+        </div>
 
-public class Virus {
-    public static void Main() {
-        Console.WriteLine("Infection Started...");
+        <div id="v-builder">
+            <input type="text" id="v-name" placeholder="Название вируса (напр. Crash.exe)">
+            <textarea id="code-editor">using System;
+public class Infection {
+    public static void Run() {
+        // Код вируса здесь
     }
 }</textarea>
-            <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="compileVirus()">СКОМПИЛИРОВАТЬ</button>
+            <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="compileAndTest()">СКОМПИЛИРОВАТЬ И ПРОВЕРИТЬ</button>
         </div>
-
-        <button id="show-builder-btn" class="auth-btn" style="width:100%; margin-top:10px;" onclick="document.getElementById('virus-builder').style.display='block'; this.style.display='none'">+ СОЗДАТЬ НОВЫЙ ВИРУС</button>
-        
-        <div id="virus-list" style="margin-top: 20px;"></div>
     </div>
 </div>
 
@@ -171,27 +183,24 @@ public class Virus {
         <h2 id="modal-title">Вход</h2>
         <input type="text" id="user-in" placeholder="Логин">
         <input type="password" id="pass-in" placeholder="Пароль">
-        <div id="reg-box" style="display:none;"><input type="text" id="inv-in" placeholder="Инвайт"></div>
-        <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="handleAuth()">ОК</button>
+        <div id="reg-box" style="display:none;"><input type="text" id="inv-in" placeholder="Код"></div>
+        <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="handleAuth()">ВОЙТИ</button>
         <p onclick="toggleAuthMode()" id="auth-toggle-btn" style="font-size: 11px; cursor: pointer; margin-top: 10px;">Регистрация</p>
         <p id="error-log" style="font-size: 10px; color: #ff9999;"></p>
-        <button onclick="closeModal()" style="background:none; border:none; color:white; cursor:pointer; margin-top:10px;">Закрыть</button>
+        <button onclick="closeModal()" style="background:none; border:none; color:white; cursor:pointer;">Закрыть</button>
     </div>
 </div>
 
 <script>
     const API_URL = "https://eo4rau8gkt8py2a.m.pipedream.net";
     let isLoginMode = true;
-    let virusCount = 0;
 
     // Пузырьки
     const bContainer = document.getElementById('bubble-container');
     for(let i=0; i<15; i++) {
         const b = document.createElement('div'); b.className = 'bubble';
         b.style.width = b.style.height = Math.random()*50+20+'px';
-        b.style.left = Math.random()*100+'%';
-        b.style.animationDelay = Math.random()*5+'s';
-        bContainer.appendChild(b);
+        b.style.left = Math.random()*100+'%'; bContainer.appendChild(b);
     }
 
     function openModal() { document.getElementById('auth-modal').style.display = 'flex'; }
@@ -216,17 +225,33 @@ public class Virus {
     function buildMenu(isAdmin) {
         const menu = document.getElementById('side-menu');
         menu.innerHTML = "";
-        const links = [
+        
+        // ОБЩИЕ ПУНКТЫ
+        const common = [
             {id: 'settings', text: '⚙️ Настройки'},
-            {id: 'people', text: '👥 Люди'},
-            {id: 'viruses', text: '🦠 Вирусы'}
+            {id: 'pixie', text: '🔹 Пикси'},
+            {id: 'adult', text: '💠 Взрослые Пикси'}
         ];
-        links.forEach(l => {
+        
+        common.forEach(l => {
             const li = document.createElement('li');
-            li.innerText = l.text;
-            li.onclick = () => openView(l.id);
+            li.innerText = l.text; li.onclick = () => openView(l.id);
             menu.appendChild(li);
         });
+
+        // АДМИНСКИЕ ПУНКТЫ
+        if(isAdmin) {
+            const adminItems = [
+                {id: 'people', text: '👥 Люди'},
+                {id: 'viruses', text: '🦠 Вирусы'}
+            ];
+            adminItems.forEach(l => {
+                const li = document.createElement('li');
+                li.innerText = l.text; li.onclick = () => openView(l.id);
+                menu.appendChild(li);
+            });
+        }
+
         const lo = document.createElement('li');
         lo.innerText = "🔒 Выход"; lo.style.color = "#ff9999"; lo.onclick = () => location.reload();
         menu.appendChild(lo);
@@ -248,39 +273,44 @@ public class Virus {
             
             if(d.success) {
                 closeModal();
-                document.getElementById('view-home').innerHTML = `<h1>Привет, ${user}!</h1><p>Система активна.</p>`;
+                document.getElementById('view-home').innerHTML = `<h1>Дом: Привет, ${user}!</h1>`;
                 document.getElementById('pixie-trigger').style.display = 'block';
                 document.getElementById('login-nav-btn').style.display = 'none';
                 document.getElementById('status-bar').innerText = "Пользователь: " + user;
+                document.getElementById('role-text').innerText = d.isAdmin ? "Администратор" : "Житель Дома";
                 
-                // ОБНОВЛЯЕМ КТО АВТОРИЗОВАЛСЯ
-                document.getElementById('active-user-display').innerText = user;
-                
-                buildMenu(true); // Даем доступ ко всем вкладкам
+                // Добавляем человека в список (если ты админ и это видишь)
+                if(user !== "Администратор") {
+                    const card = document.createElement('div');
+                    card.className = "card";
+                    card.innerHTML = `<span>${user}</span><b style="color:#adff2f">В СЕТИ</b>`;
+                    document.getElementById('user-list').appendChild(card);
+                }
+
+                buildMenu(d.isAdmin);
             } else { log.innerText = d.message; }
         } catch(e) { log.innerText = "Ошибка API"; }
     }
 
-    function compileVirus() {
-        const name = document.getElementById('v-name').value || "Unnamed_Virus";
-        virusCount++;
-        document.getElementById('virus-count').innerText = virusCount;
-        
-        const list = document.getElementById('virus-list');
-        const item = document.createElement('div');
-        item.className = 'card';
-        item.innerHTML = `<span>${name}</span><b style="color:#ff4444">READY</b>`;
-        list.prepend(item);
+    // Тестирование вируса на Пикси
+    function compileAndTest() {
+        const name = document.getElementById('v-name').value || "Virus.cs";
+        const status = document.getElementById('test-pixie-status');
+        const orb = document.getElementById('test-pixie-orb');
 
-        alert("Вирус " + name + " успешно скомпилирован на C#!");
-        document.getElementById('virus-builder').style.display = 'none';
-        document.getElementById('show-builder-btn').style.display = 'block';
+        status.innerText = "Компиляция " + name + "...";
+        setTimeout(() => {
+            status.innerText = "Вирус запущен! Пикси заражен.";
+            orb.style.background = "#ff4444";
+            orb.style.boxShadow = "0 0 20px #ff0000";
+            alert("Вирус успешно протестирован на подопытном Пикси!");
+        }, 2000);
     }
 
     async function genInv() {
         const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'generateCode' }) });
         const d = await r.json();
-        if(d.success) document.getElementById('inv-output').innerText = "ИНВАЙТ: " + d.code;
+        if(d.success) document.getElementById('inv-output').innerText = "КОД: " + d.code;
     }
 </script>
 </body>
